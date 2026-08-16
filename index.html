@@ -3,19 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thử nghiệm liên kết Python</title>
+    <title>AI Chatbot của tôi</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding-top: 50px; background-color: #f4f4f9; }
-        .btn { padding: 15px 25px; font-size: 18px; color: white; background-color: #ff5722; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .chat-container { width: 100%; max-width: 400px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; margin-top: 20px; }
+        .chat-header { background: #0084ff; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .chat-box { height: 300px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px; border-radius: 8px; max-width: 70%; word-break: break-word; }
+        .user { background: #0084ff; color: white; align-self: flex-end; }
+        .bot { background: #e4e6eb; color: black; align-self: flex-start; }
+        .input-area { display: flex; border-top: 1px solid #ddd; }
+        .input-area input { flex: 1; padding: 15px; border: none; outline: none; }
+        .input-area button { padding: 15px; background: #0084ff; color: white; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <h2>Trang thử nghiệm gọi file Python trực tiếp</h2>
-    <p>Bấm vào nút bên dưới để xem trình duyệt xử lý file main.py như thế nào:</p>
-    
-    <!-- Đường dẫn trỏ thẳng tới file main.py trong cùng một kho chứa -->
-    <a href="main.py" class="btn">Kích hoạt file main.py</a>
+<div class="chat-container">
+    <div class="chat-header">AI Chatbot Hoạt Động</div>
+    <div class="chat-box" id="chatBox">
+        <div class="message bot">Hệ thống đang nạp dữ liệu AI... Vui lòng đợi!</div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Gửi</button>
+    </div>
+</div>
+
+<script>
+    let chatbotData = [];
+
+    // Tự động đọc dữ liệu từ file data.csv trên GitHub của bạn
+    fetch('https://raw.githubusercontent.com/vo3695941-cmyk/chatbottttttttttt/refs/heads/main/data.csv')
+        .then(response => response.text())
+        .then(text => {
+            let lines = text.split('\n');
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                let parts = lines[i].split(',');
+                if (parts.length >= 2) {
+                    chatbotData.push({
+                        question: parts[0].trim().toLowerCase(),
+                        answer: parts[1].trim()
+                    });
+                }
+            }
+            document.getElementById("chatBox").innerHTML = `<div class="message bot">AI đã nạp dữ liệu thành công! Hãy thử gõ "xin chao" xem nhé.</div>`;
+        })
+        .catch(err => {
+            document.getElementById("chatBox").innerHTML = `<div class="message bot" style="color:red;">Lỗi kết nối dữ liệu! Hãy kiểm tra lại file data.csv.</div>`;
+        });
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") sendMessage();
+    }
+
+    function sendMessage() {
+        let input = document.getElementById("userInput");
+        let text = input.value.trim();
+        if (!text) return;
+
+        let chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML += `<div class="message user">${text}</div>`;
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        setTimeout(() => {
+            let userQuery = text.toLowerCase();
+            let bestAnswer = "Mô hình hiện tại chưa được học câu này của bạn!";
+            
+            // AI dò tìm câu trả lời phù hợp trong file csv
+            for (let item of chatbotData) {
+                if (userQuery.includes(item.question) || item.question.includes(userQuery)) {
+                    bestAnswer = item.answer;
+                    break;
+                }
+            }
+
+            chatBox.innerHTML += `<div class="message bot">${bestAnswer}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 400);
+    }
+</script>
 
 </body>
 </html>
