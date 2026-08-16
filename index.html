@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot của tôi</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .chat-container { width: 100%; max-width: 400px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .chat-header { background: #0084ff; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .chat-box { height: 300px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px; border-radius: 8px; max-width: 70%; }
+        .user { background: #0084ff; color: white; align-self: flex-end; }
+        .bot { background: #e4e6eb; color: black; align-self: flex-start; }
+        .input-area { display: flex; border-top: 1px solid #ddd; }
+        .input-area input { flex: 1; padding: 15px; border: none; outline: none; }
+        .input-area button { padding: 15px; background: #0084ff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">AI Chatbot GitHub</div>
+    <div class="chat-box" id="chatBox">
+        <div class="message bot">Xin chào! Tôi có thể giúp gì cho bạn?</div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Nhập tin nhắn...">
+        <button onclick="sendMessage()">Gửi</button>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        let input = document.getElementById("userInput");
+        let text = input.value.trim();
+        if (!text) return;
+
+        let chatBox = document.getElementById("chatBox");
+
+        // Hiển thị tin nhắn người dùng
+        chatBox.innerHTML += `<div class="message user">${text}</div>`;
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Phản hồi tạm thời của Bot (Vì GitHub Pages tĩnh không tự chạy Python trực tiếp được)
+        setTimeout(() => {
+            chatBox.innerHTML += `<div class="message bot">Tôi đã nhận được: "${text}". Khung giao diện web của bạn hoạt động tốt rồi đó!</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>
